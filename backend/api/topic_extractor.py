@@ -1,11 +1,14 @@
+from backend.utils.llm_client import call_llm
+
 def extract_topic(query: str) -> str:
-    q = query.lower()
+    prompt = f"""
+        Extract the main software system or architecture topic.
+        Return ONLY 1-3 words.
+        No explanation.
 
-    if "ecommerce" in q or "e-commerce" in q:
-        return "E-commerce System"
-    if "chat" in q:
-        return "Chat Application"
-    if "payment" in q:
-        return "Payment System"
-
-    return "Software System"
+        Input:
+        {query}
+    """
+    
+    topic = call_llm(prompt)
+    return topic
