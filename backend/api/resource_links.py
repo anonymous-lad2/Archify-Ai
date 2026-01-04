@@ -107,48 +107,71 @@ def fetch_direct_links(query: str, max_results: int = 5) -> list[str]:
 def generate_fallback_links(topic: str, level: str) -> list[str]:
     """
     Generate direct links to well-known documentation and resources
-    when search fails.
+    when search fails. Prioritizes directly accessible sources.
     """
     topic_lower = topic.lower()
     fallback_urls = []
     
-    # Popular documentation sources
+    # Comprehensive documentation sources with better accessibility
     docs = {
         'messaging': [
             'https://www.whatsapp.com/business/guide/',
             'https://www.twilio.com/docs/messaging',
-            'https://firebase.google.com/docs/cloud-messaging'
+            'https://firebase.google.com/docs/cloud-messaging',
+            'https://www.vonage.com/communications-apis/messages/'
+        ],
+        'ride|hailing|uber|lyft': [
+            'https://en.wikipedia.org/wiki/Ride_hailing',
+            'https://aws.amazon.com/solutions/case-studies/uber/',
+            'https://www.uber.com/newsroom/uber-technology/',
+            'https://martinfowler.com/articles/patterns-of-distributed-systems/',
+            'https://www.nginx.com/blog/microservices-use-case-deployment-patterns/'
         ],
         'app': [
             'https://developer.android.com/guide/topics/manifest',
             'https://developer.apple.com/documentation/',
-            'https://web.dev/'
+            'https://web.dev/',
+            'https://en.wikipedia.org/wiki/Mobile_application'
         ],
         'system': [
             'https://en.wikipedia.org/wiki/Scalable_system',
             'https://www.nginx.com/blog/',
-            'https://aws.amazon.com/architecture/'
+            'https://aws.amazon.com/architecture/',
+            'https://highscalability.com/'
+        ],
+        'database|cache|queue': [
+            'https://aws.amazon.com/databases/',
+            'https://redis.io/docs/',
+            'https://www.rabbitmq.com/documentation.html',
+            'https://kafka.apache.org/documentation/'
         ],
         'architecture': [
             'https://microservices.io/',
             'https://www.nginx.com/blog/introduction-to-microservices/',
-            'https://martinfowler.com/articles/microservices.html'
+            'https://martinfowler.com/articles/microservices.html',
+            'https://en.wikipedia.org/wiki/Software_architecture'
         ]
     }
     
-    # Match keywords
+    # Match keywords and collect URLs
     for key, urls in docs.items():
-        if key in topic_lower:
+        if any(keyword in topic_lower for keyword in key.split('|')):
             fallback_urls.extend(urls)
     
-    # Add generic resources
+    # Add Wikipedia as reliable fallback
     fallback_urls.extend([
-        f'https://medium.com/search?q={topic_lower} {level} architecture',
-        f'https://dev.to/search?q={topic_lower} architecture',
-        'https://github.com/search?type=repositories',
+        f'https://en.wikipedia.org/wiki/{topic.replace(" ", "_")}',
+        f'https://en.wikipedia.org/wiki/{level.upper()}_architecture',
     ])
     
-    return fallback_urls[:7]
+    # Add AWS architecture patterns (very accessible)
+    fallback_urls.extend([
+        'https://aws.amazon.com/architecture/reference-architectures/',
+        'https://www.nginx.com/blog/designing-scalable-architectures/'
+    ])
+    
+    # Remove duplicates and return
+    return list(dict.fromkeys(fallback_urls))[:7]
 
 
 def get_resource_links(topic: str, level: str) -> list[str]:

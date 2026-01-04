@@ -1,5 +1,5 @@
 def build_architecture_prompt(topic: str, level: str, content: str) -> str:
-    return f"""You are a senior software architect expert. Analyze the documentation and create a {level} architecture diagram.
+    return f"""You are a senior software architect expert. Analyze the documentation and create a {level} architecture diagram for {topic}.
 
 CRITICAL RULES:
 1. Return ONLY valid JSON - no markdown, no text before/after

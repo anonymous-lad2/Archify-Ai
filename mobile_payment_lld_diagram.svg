@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+
+        <defs>
+            <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+            </linearGradient>
+            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                <feOffset dx="0" dy="2" result="offsetblur"/>
+                <feComponentTransfer>
+                    <feFuncA type="linear" slope="0.2"/>
+                </feComponentTransfer>
+                <feMerge>
+                    <feMergeNode/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#bgGradient)"/>
+        
+
+        <g id="title">
+            <rect x="20" y="20" width="340" height="50" rx="8" 
+                  fill="white" filter="url(#shadow)"/>
+            <text x="40" y="52" font-size="24" font-weight="600" fill="#1e293b" 
+                  font-family="system-ui, -apple-system, sans-serif">Mobile Payment - LLD</text>
+        </g>
+        
+
+        <g class="edge">
+            <path d="M 700.0,150 C 617.5,234.0 507.5,306.0 425.0,330" fill="none" stroke="#3B82F6" 
+                  stroke-width="2.5" opacity="0.7"/>
+        
+            <polygon points="425.0,330 433.3026649884556,321.3359504797425 436.65461947841715,332.85829403898543" 
+                     fill="#3B82F6" opacity="0.8"/>
+            
+            <rect x="538.0" y="248.0" 
+                  width="49" height="20" rx="4" 
+                  fill="white" opacity="0.9"/>
+            <text x="562.5" y="263.0" text-anchor="middle" 
+                  font-size="11" fill="#1e293b" font-weight="500"
+                  font-family="system-ui, -apple-system, sans-serif">Request</text>
+        </g>
+        
+
+        <g class="edge">
+            <path d="M 425.0,330 C 425.0,414.0 425.0,486.0 425.0,510" fill="none" stroke="#3B82F6" 
+                  stroke-width="2.5" opacity="0.7"/>
+        
+            <polygon points="425.0,510 419.0,499.60769515458674 431.0,499.60769515458674" 
+                     fill="#3B82F6" opacity="0.8"/>
+            
+            <rect x="393.5" y="428.0" 
+                  width="63" height="20" rx="4" 
+                  fill="white" opacity="0.9"/>
+            <text x="425.0" y="443.0" text-anchor="middle" 
+                  font-size="11" fill="#1e293b" font-weight="500"
+                  font-family="system-ui, -apple-system, sans-serif">Sync Call</text>
+        </g>
+        
+
+        <g class="edge">
+            <path d="M 425.0,510 C 507.5,594.0 617.5,666.0 700.0,690" fill="none" stroke="#EF4444" 
+                  stroke-width="2.5" opacity="0.7"/>
+        
+            <polygon points="700.0,690 688.3453805215828,692.8582940389854 691.6973350115444,681.3359504797426" 
+                     fill="#EF4444" opacity="0.8"/>
+            
+            <rect x="527.5" y="608.0" 
+                  width="70" height="20" rx="4" 
+                  fill="white" opacity="0.9"/>
+            <text x="562.5" y="623.0" text-anchor="middle" 
+                  font-size="11" fill="#1e293b" font-weight="500"
+                  font-family="system-ui, -apple-system, sans-serif">Read Write</text>
+        </g>
+        
+
+        <g class="edge">
+            <path d="M 425.0,510 C 590.0,486.0 810.0,414.0 975.0,330" fill="none" stroke="#8B5CF6" 
+                  stroke-width="2.5" opacity="0.7" stroke-dasharray="8,4"/>
+        
+            <polygon points="975.0,330 968.4608594797002,340.06179115544404 963.016662991662,329.36783376822615" 
+                     fill="#8B5CF6" opacity="0.8"/>
+            
+            <rect x="661.5" y="428.0" 
+                  width="77" height="20" rx="4" 
+                  fill="white" opacity="0.9"/>
+            <text x="700.0" y="443.0" text-anchor="middle" 
+                  font-size="11" fill="#1e293b" font-weight="500"
+                  font-family="system-ui, -apple-system, sans-serif">Async Event</text>
+        </g>
+        
+
+        <g class="edge">
+            <path d="M 975.0,510 C 810.0,540.0 590.0,540.0 425.0,510" fill="none" stroke="#3B82F6" 
+                  stroke-width="2.5" opacity="0.7"/>
+        
+            <polygon points="425.0,510 436.2979886631875,505.9558125455801 434.1513634047877,517.762251466779" 
+                     fill="#3B82F6" opacity="0.8"/>
+            
+            <rect x="675.5" y="518.0" 
+                  width="49" height="20" rx="4" 
+                  fill="white" opacity="0.9"/>
+            <text x="700.0" y="533.0" text-anchor="middle" 
+                  font-size="11" fill="#1e293b" font-weight="500"
+                  font-family="system-ui, -apple-system, sans-serif">Request</text>
+        </g>
+        
+
+        <g class="edge">
+            <path d="M 425.0,330 C 590.0,414.0 810.0,486.0 975.0,510" fill="none" stroke="#10B981" 
+                  stroke-width="2.5" opacity="0.7"/>
+        
+            <polygon points="975.0,510 963.8522769777836,514.4416518796443 965.579555126353,502.56661460823017" 
+                     fill="#10B981" opacity="0.8"/>
+            
+            <rect x="672.0" y="428.0" 
+                  width="56" height="20" rx="4" 
+                  fill="white" opacity="0.9"/>
+            <text x="700.0" y="443.0" text-anchor="middle" 
+                  font-size="11" fill="#1e293b" font-weight="500"
+                  font-family="system-ui, -apple-system, sans-serif">Response</text>
+        </g>
+        
+
+        <g class="component" filter="url(#shadow)">
+            <rect x="610.0" y="95.0" width="180" height="110" 
+                  rx="12" fill="#4A90E2" stroke="#1e293b" stroke-width="2"/>
+            <rect x="610.0" y="95.0" width="180" height="35" 
+                  rx="12" fill="rgba(0,0,0,0.1)"/>
+            <text x="700.0" y="119.0" text-anchor="middle" 
+                  font-size="15" font-weight="600" fill="white" 
+                  font-family="system-ui, -apple-system, sans-serif">Mobile Device</text>
+            <text x="700.0" y="155" text-anchor="middle" 
+                  font-size="11" fill="rgba(255,255,255,0.9)" 
+                  font-family="system-ui, -apple-system, sans-serif">client</text>
+            <text x="700.0" y="175" text-anchor="middle" 
+                  font-size="10" fill="rgba(255,255,255,0.7)" 
+                  font-family="system-ui, -apple-system, sans-serif">
+                User interface for mobile...
+            </text>
+        </g>
+        
+
+        <g class="component" filter="url(#shadow)">
+            <polygon points="515.0,330.0 470.0,407.9422863405995 380.0,407.9422863405995 335.0,330.0 379.99999999999994,252.05771365940052 469.99999999999994,252.0577136594005" 
+                     fill="#7B68EE" stroke="#1e293b" stroke-width="2"/>
+            <text x="425.0" y="322" text-anchor="middle" 
+                  font-size="15" font-weight="600" fill="white" 
+                  font-family="system-ui, -apple-system, sans-serif">Payment Gateway</text>
+            <text x="425.0" y="342" text-anchor="middle" 
+                  font-size="11" fill="rgba(255,255,255,0.8)" 
+                  font-family="system-ui, -apple-system, sans-serif">gateway</text>
+        </g>
+        
+
+        <g class="component" filter="url(#shadow)">
+            <rect x="335.0" y="455.0" width="180" height="110" 
+                  rx="12" fill="#50C878" stroke="#1e293b" stroke-width="2"/>
+            <rect x="335.0" y="455.0" width="180" height="35" 
+                  rx="12" fill="rgba(0,0,0,0.1)"/>
+            <text x="425.0" y="479.0" text-anchor="middle" 
+                  font-size="15" font-weight="600" fill="white" 
+                  font-family="system-ui, -apple-system, sans-serif">Payment Processor</text>
+            <text x="425.0" y="515" text-anchor="middle" 
+                  font-size="11" fill="rgba(255,255,255,0.9)" 
+                  font-family="system-ui, -apple-system, sans-serif">microservice</text>
+            <text x="425.0" y="535" text-anchor="middle" 
+                  font-size="10" fill="rgba(255,255,255,0.7)" 
+                  font-family="system-ui, -apple-system, sans-serif">
+                Process payment requests
+            </text>
+        </g>
+        
+
+        <g class="component" filter="url(#shadow)">
+            <ellipse cx="700.0" cy="650.0" rx="80.0" ry="20" 
+                     fill="#FF6B6B" stroke="#1e293b" stroke-width="2"/>
+            <rect x="620.0" y="650.0" 
+                  width="160" height="80" 
+                  fill="#FF6B6B" stroke="none"/>
+            <rect x="620.0" y="650.0" 
+                  width="160" height="80" 
+                  fill="none" stroke="#1e293b" stroke-width="2"/>
+            <ellipse cx="700.0" cy="730.0" rx="80.0" ry="20" 
+                     fill="#FF6B6B" stroke="#1e293b" stroke-width="2"/>
+            <text x="700.0" y="685" text-anchor="middle" 
+                  font-size="15" font-weight="600" fill="white" 
+                  font-family="system-ui, -apple-system, sans-serif">Database</text>
+            <text x="700.0" y="705" text-anchor="middle" 
+                  font-size="11" fill="rgba(255,255,255,0.8)" 
+                  font-family="system-ui, -apple-system, sans-serif">database</text>
+        </g>
+        
+
+        <g class="component" filter="url(#shadow)">
+            <rect x="906.0" y="444.0" 
+                  width="170" height="100" rx="8" 
+                  fill="#FFA500" opacity="0.3" stroke="#1e293b" stroke-width="1"/>
+            <rect x="898.0" y="452.0" 
+                  width="170" height="100" rx="8" 
+                  fill="#FFA500" opacity="0.6" stroke="#1e293b" stroke-width="1"/>
+            <rect x="890.0" y="460.0" 
+                  width="170" height="100" rx="8" 
+                  fill="#FFA500" stroke="#1e293b" stroke-width="2"/>
+            <text x="975.0" y="505" text-anchor="middle" 
+                  font-size="15" font-weight="600" fill="white" 
+                  font-family="system-ui, -apple-system, sans-serif">Mobile Wallet</text>
+            <text x="975.0" y="525" text-anchor="middle" 
+                  font-size="11" fill="rgba(255,255,255,0.8)" 
+                  font-family="system-ui, -apple-system, sans-serif">microservice</text>
+        </g>
+        
+
+        <g class="component" filter="url(#shadow)">
+            <rect x="885.0" y="275.0" width="180" height="110" 
+                  rx="12" fill="#8B9467" stroke="#1e293b" stroke-width="2"/>
+            <rect x="885.0" y="275.0" width="180" height="35" 
+                  rx="12" fill="rgba(0,0,0,0.1)"/>
+            <text x="975.0" y="299.0" text-anchor="middle" 
+                  font-size="15" font-weight="600" fill="white" 
+                  font-family="system-ui, -apple-system, sans-serif">Banking System</text>
+            <text x="975.0" y="335" text-anchor="middle" 
+                  font-size="11" fill="rgba(255,255,255,0.9)" 
+                  font-family="system-ui, -apple-system, sans-serif">external</text>
+            <text x="975.0" y="355" text-anchor="middle" 
+                  font-size="10" fill="rgba(255,255,255,0.7)" 
+                  font-family="system-ui, -apple-system, sans-serif">
+                Integrate with banking in...
+            </text>
+        </g>
+        
+</svg>

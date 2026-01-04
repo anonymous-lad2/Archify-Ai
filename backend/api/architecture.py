@@ -4,6 +4,7 @@ from backend.api.topic_extractor import extract_topic
 from backend.api.resource_links import get_resource_links
 from backend.api.scraper import scrape_multiple
 from backend.api.architecture_generator import generate_architecture
+from backend.api.svg_diagram_generator import generate_svg_diagram
 
 generate_architecture_router = APIRouter(
     prefix="/architecture",
@@ -23,6 +24,22 @@ def generate_architecture_endpoint(req: ArchitectureRequest):
         level=req.level,
         raw_content=raw_content
     )
+
+    # Generate SVG diagram from the architecture response
+    try:
+        diagram_filename = f"{topic.lower().replace(' ', '_')}_{req.level}_diagram"
+        diagram_data = {
+            'topic': f"{topic} - {req.level.upper()}",
+            'components': architecture.get("components", {}),
+            'relationships': architecture.get("relationships", [])
+        }
+        svg_content = generate_svg_diagram(
+            data=diagram_data,
+            output=diagram_filename
+        )
+        print(f"✅ SVG diagram generated: {diagram_filename}.svg")
+    except Exception as e:
+        print(f"⚠️ Diagram generation failed: {e}")
 
     return ArchitectureResponse(
         topic=topic,
