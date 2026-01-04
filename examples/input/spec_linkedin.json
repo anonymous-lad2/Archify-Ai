@@ -1,0 +1,160 @@
+{
+  "components": {
+    "web": {
+      "type": "client",
+      "label": "Web"
+    },
+    "mobile": {
+      "type": "client",
+      "label": "Mobile"
+    },
+    "gw": {
+      "type": "gateway",
+      "label": "API GW"
+    },
+    "feed": {
+      "type": "microservice",
+      "label": "Feed Service"
+    },
+    "graph": {
+      "type": "microservice",
+      "label": "Graph DB"
+    },
+    "search": {
+      "type": "microservice",
+      "label": "Search"
+    },
+    "recommendation": {
+      "type": "microservice",
+      "label": "Recommendation"
+    },
+    "social": {
+      "type": "microservice",
+      "label": "Social Graph"
+    },
+    "post_cache": {
+      "type": "cache",
+      "label": "Feed Cache"
+    },
+    "graph_cache": {
+      "type": "cache",
+      "label": "Graph Cache"
+    },
+    "posts_db": {
+      "type": "database",
+      "label": "Posts DB"
+    },
+    "graph_db": {
+      "type": "database",
+      "label": "Graph DB (Neo4j)"
+    },
+    "search_index": {
+      "type": "external",
+      "label": "Elasticsearch"
+    },
+    "ml_rank": {
+      "type": "external",
+      "label": "Ranking ML"
+    },
+    "events": {
+      "type": "queue",
+      "label": "Kafka"
+    }
+  },
+  "relationships": [
+    {
+      "from": "web",
+      "to": "gw",
+      "type": "http"
+    },
+    {
+      "from": "mobile",
+      "to": "gw",
+      "type": "http"
+    },
+    {
+      "from": "gw",
+      "to": "feed",
+      "type": "grpc"
+    },
+    {
+      "from": "gw",
+      "to": "search",
+      "type": "grpc"
+    },
+    {
+      "from": "feed",
+      "to": "post_cache",
+      "type": "dependency",
+      "label": "L1 Cache"
+    },
+    {
+      "from": "feed",
+      "to": "posts_db",
+      "type": "db_query"
+    },
+    {
+      "from": "feed",
+      "to": "social",
+      "type": "grpc",
+      "label": "Connections"
+    },
+    {
+      "from": "feed",
+      "to": "recommendation",
+      "type": "grpc"
+    },
+    {
+      "from": "social",
+      "to": "graph_db",
+      "type": "db_query"
+    },
+    {
+      "from": "social",
+      "to": "graph_cache",
+      "type": "dependency"
+    },
+    {
+      "from": "recommendation",
+      "to": "ml_rank",
+      "type": "http",
+      "label": "Rank"
+    },
+    {
+      "from": "search",
+      "to": "search_index",
+      "type": "http"
+    },
+    {
+      "from": "posts_db",
+      "to": "events",
+      "type": "solid",
+      "label": "Write Events"
+    },
+    {
+      "from": "events",
+      "to": "search_index",
+      "type": "curved",
+      "label": "Index Update"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "realtime",
+      "components": [
+        "feed",
+        "post_cache"
+      ],
+      "label": "Real-Time Feed"
+    },
+    {
+      "id": "graph",
+      "components": [
+        "social",
+        "graph_db",
+        "graph_cache"
+      ],
+      "label": "Social Graph"
+    }
+  ]
+}

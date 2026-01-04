@@ -1,0 +1,142 @@
+{
+  "components": {
+    "user": {
+      "type": "client",
+      "label": "Users"
+    },
+    "global_lb": {
+      "type": "gateway",
+      "label": "Global LB (DNS)"
+    },
+    "us_ingress": {
+      "type": "gateway",
+      "label": "US Ingress"
+    },
+    "eu_ingress": {
+      "type": "gateway",
+      "label": "EU Ingress"
+    },
+    "us_pod1": {
+      "type": "microservice",
+      "label": "Pod Set (US)"
+    },
+    "eu_pod1": {
+      "type": "microservice",
+      "label": "Pod Set (EU)"
+    },
+    "db_primary": {
+      "type": "database",
+      "label": "DB Primary (US)"
+    },
+    "db_replica": {
+      "type": "database",
+      "label": "DB Replica (EU)"
+    },
+    "cache_us": {
+      "type": "cache",
+      "label": "Cache (US)"
+    },
+    "cache_eu": {
+      "type": "cache",
+      "label": "Cache (EU)"
+    },
+    "etcd": {
+      "type": "infrastructure",
+      "label": "etcd State"
+    },
+    "prometheus": {
+      "type": "external",
+      "label": "Prometheus"
+    }
+  },
+  "relationships": [
+    {
+      "from": "user",
+      "to": "global_lb",
+      "type": "http",
+      "label": "Anycast"
+    },
+    {
+      "from": "global_lb",
+      "to": "us_ingress",
+      "type": "http",
+      "label": "US Route"
+    },
+    {
+      "from": "global_lb",
+      "to": "eu_ingress",
+      "type": "http",
+      "label": "EU Route"
+    },
+    {
+      "from": "us_ingress",
+      "to": "us_pod1",
+      "type": "grpc"
+    },
+    {
+      "from": "eu_ingress",
+      "to": "eu_pod1",
+      "type": "grpc"
+    },
+    {
+      "from": "us_pod1",
+      "to": "cache_us",
+      "type": "dependency"
+    },
+    {
+      "from": "eu_pod1",
+      "to": "cache_eu",
+      "type": "dependency"
+    },
+    {
+      "from": "us_pod1",
+      "to": "db_primary",
+      "type": "db_query",
+      "label": "Write"
+    },
+    {
+      "from": "eu_pod1",
+      "to": "db_replica",
+      "type": "db_query",
+      "label": "Read"
+    },
+    {
+      "from": "db_primary",
+      "to": "db_replica",
+      "type": "curved",
+      "label": "Replication"
+    },
+    {
+      "from": "us_pod1",
+      "to": "etcd",
+      "type": "dependency",
+      "label": "Config"
+    },
+    {
+      "from": "us_pod1",
+      "to": "prometheus",
+      "type": "solid",
+      "label": "Metrics"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "us",
+      "components": [
+        "us_ingress",
+        "us_pod1",
+        "cache_us"
+      ],
+      "label": "US Region"
+    },
+    {
+      "id": "eu",
+      "components": [
+        "eu_ingress",
+        "eu_pod1",
+        "cache_eu"
+      ],
+      "label": "EU Region"
+    }
+  ]
+}

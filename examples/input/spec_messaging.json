@@ -1,0 +1,121 @@
+{
+  "components": {
+    "client": {
+      "type": "client",
+      "label": "Client (Web/Mobile)"
+    },
+    "ws_gateway": {
+      "type": "gateway",
+      "label": "WebSocket Gateway"
+    },
+    "auth": {
+      "type": "microservice",
+      "label": "Auth"
+    },
+    "messaging": {
+      "type": "microservice",
+      "label": "Messaging"
+    },
+    "presence": {
+      "type": "microservice",
+      "label": "Presence Tracker"
+    },
+    "notification": {
+      "type": "function",
+      "label": "Notifications"
+    },
+    "msg_cache": {
+      "type": "cache",
+      "label": "Redis (Messages)"
+    },
+    "msg_db": {
+      "type": "database",
+      "label": "Cassandra (Events)"
+    },
+    "presence_db": {
+      "type": "database",
+      "label": "DynamoDB (Presence)"
+    },
+    "events": {
+      "type": "queue",
+      "label": "Kafka Topics"
+    },
+    "search": {
+      "type": "external",
+      "label": "Elasticsearch"
+    }
+  },
+  "relationships": [
+    {
+      "from": "client",
+      "to": "ws_gateway",
+      "type": "curved",
+      "label": "WebSocket"
+    },
+    {
+      "from": "ws_gateway",
+      "to": "auth",
+      "type": "grpc"
+    },
+    {
+      "from": "ws_gateway",
+      "to": "messaging",
+      "type": "grpc"
+    },
+    {
+      "from": "ws_gateway",
+      "to": "presence",
+      "type": "grpc"
+    },
+    {
+      "from": "messaging",
+      "to": "msg_cache",
+      "type": "dependency",
+      "label": "L1"
+    },
+    {
+      "from": "messaging",
+      "to": "msg_db",
+      "type": "db_query"
+    },
+    {
+      "from": "messaging",
+      "to": "events",
+      "type": "solid",
+      "label": "Publish"
+    },
+    {
+      "from": "presence",
+      "to": "presence_db",
+      "type": "db_query"
+    },
+    {
+      "from": "events",
+      "to": "notification",
+      "type": "solid"
+    },
+    {
+      "from": "events",
+      "to": "search",
+      "type": "curved",
+      "label": "Index"
+    },
+    {
+      "from": "notification",
+      "to": "client",
+      "type": "curved",
+      "label": "Push"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "messaging_core",
+      "components": [
+        "messaging",
+        "msg_cache",
+        "msg_db"
+      ],
+      "label": "Messaging"
+    }
+  ]
+}

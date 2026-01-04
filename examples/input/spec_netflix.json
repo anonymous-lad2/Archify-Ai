@@ -1,0 +1,182 @@
+{
+  "components": {
+    "cdn": {
+      "type": "infrastructure",
+      "label": "CDN Edge"
+    },
+    "client_web": {
+      "type": "client",
+      "label": "Web Browser"
+    },
+    "client_mobile": {
+      "type": "client",
+      "label": "Mobile App"
+    },
+    "api_gw": {
+      "type": "gateway",
+      "label": "API Gateway"
+    },
+    "auth_svc": {
+      "type": "microservice",
+      "label": "Auth Service"
+    },
+    "metadata_svc": {
+      "type": "microservice",
+      "label": "Metadata Service"
+    },
+    "playback_svc": {
+      "type": "microservice",
+      "label": "Playback Service"
+    },
+    "recommendation_svc": {
+      "type": "microservice",
+      "label": "Recommendation ML"
+    },
+    "user_db": {
+      "type": "database",
+      "label": "User DB"
+    },
+    "metadata_cache": {
+      "type": "cache",
+      "label": "Metadata Cache"
+    },
+    "session_cache": {
+      "type": "cache",
+      "label": "Session Redis"
+    },
+    "event_queue": {
+      "type": "queue",
+      "label": "Kafka Topics"
+    },
+    "analytics_lake": {
+      "type": "external",
+      "label": "Data Warehouse"
+    },
+    "blob_storage": {
+      "type": "database",
+      "label": "S3 Videos"
+    }
+  },
+  "relationships": [
+    {
+      "from": "client_web",
+      "to": "cdn",
+      "type": "http",
+      "label": "Video Stream"
+    },
+    {
+      "from": "client_mobile",
+      "to": "cdn",
+      "type": "http",
+      "label": "Video Stream"
+    },
+    {
+      "from": "client_web",
+      "to": "api_gw",
+      "type": "http",
+      "label": "REST"
+    },
+    {
+      "from": "client_mobile",
+      "to": "api_gw",
+      "type": "http",
+      "label": "gRPC"
+    },
+    {
+      "from": "api_gw",
+      "to": "auth_svc",
+      "type": "grpc",
+      "label": "JWT Verify"
+    },
+    {
+      "from": "api_gw",
+      "to": "metadata_svc",
+      "type": "grpc",
+      "label": "Metadata"
+    },
+    {
+      "from": "api_gw",
+      "to": "playback_svc",
+      "type": "grpc"
+    },
+    {
+      "from": "api_gw",
+      "to": "recommendation_svc",
+      "type": "grpc"
+    },
+    {
+      "from": "auth_svc",
+      "to": "user_db",
+      "type": "db_query",
+      "label": "User Lookup"
+    },
+    {
+      "from": "auth_svc",
+      "to": "session_cache",
+      "type": "dependency"
+    },
+    {
+      "from": "metadata_svc",
+      "to": "metadata_cache",
+      "type": "dependency"
+    },
+    {
+      "from": "metadata_svc",
+      "to": "blob_storage",
+      "type": "db_query",
+      "label": "Assets"
+    },
+    {
+      "from": "playback_svc",
+      "to": "session_cache",
+      "type": "db_query"
+    },
+    {
+      "from": "playback_svc",
+      "to": "event_queue",
+      "type": "solid",
+      "label": "Watch Events"
+    },
+    {
+      "from": "recommendation_svc",
+      "to": "event_queue",
+      "type": "dependency"
+    },
+    {
+      "from": "event_queue",
+      "to": "analytics_lake",
+      "type": "curved",
+      "label": "Stream"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "frontend",
+      "components": [
+        "client_web",
+        "client_mobile"
+      ],
+      "label": "Client Layer"
+    },
+    {
+      "id": "services",
+      "components": [
+        "auth_svc",
+        "metadata_svc",
+        "playback_svc",
+        "recommendation_svc"
+      ],
+      "label": "Microservices"
+    },
+    {
+      "id": "data",
+      "components": [
+        "user_db",
+        "metadata_cache",
+        "session_cache",
+        "blob_storage"
+      ],
+      "label": "Data Layer"
+    }
+  ]
+}

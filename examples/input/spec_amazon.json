@@ -1,0 +1,212 @@
+{
+  "components": {
+    "web": {
+      "type": "client",
+      "label": "Website"
+    },
+    "mobile": {
+      "type": "client",
+      "label": "Mobile"
+    },
+    "cdn": {
+      "type": "infrastructure",
+      "label": "CloudFront"
+    },
+    "elb": {
+      "type": "gateway",
+      "label": "ELB"
+    },
+    "product": {
+      "type": "microservice",
+      "label": "Product Catalog"
+    },
+    "cart": {
+      "type": "microservice",
+      "label": "Shopping Cart"
+    },
+    "order": {
+      "type": "microservice",
+      "label": "Order Svc"
+    },
+    "payment": {
+      "type": "microservice",
+      "label": "Payment"
+    },
+    "fulfillment": {
+      "type": "microservice",
+      "label": "Fulfillment"
+    },
+    "inventory": {
+      "type": "microservice",
+      "label": "Inventory"
+    },
+    "notification": {
+      "type": "function",
+      "label": "Notification"
+    },
+    "product_db": {
+      "type": "database",
+      "label": "Product DB"
+    },
+    "order_db": {
+      "type": "database",
+      "label": "Order DB"
+    },
+    "inventory_db": {
+      "type": "database",
+      "label": "Inventory DB"
+    },
+    "cache": {
+      "type": "cache",
+      "label": "ElastiCache"
+    },
+    "queue": {
+      "type": "queue",
+      "label": "SQS/EventBridge"
+    },
+    "search": {
+      "type": "external",
+      "label": "Elasticsearch"
+    },
+    "warehouse_system": {
+      "type": "external",
+      "label": "Warehouse API"
+    }
+  },
+  "relationships": [
+    {
+      "from": "web",
+      "to": "cdn",
+      "type": "http",
+      "label": "Static Assets"
+    },
+    {
+      "from": "web",
+      "to": "elb",
+      "type": "http"
+    },
+    {
+      "from": "mobile",
+      "to": "elb",
+      "type": "http"
+    },
+    {
+      "from": "elb",
+      "to": "product",
+      "type": "grpc"
+    },
+    {
+      "from": "elb",
+      "to": "cart",
+      "type": "grpc"
+    },
+    {
+      "from": "elb",
+      "to": "order",
+      "type": "grpc"
+    },
+    {
+      "from": "product",
+      "to": "product_db",
+      "type": "db_query"
+    },
+    {
+      "from": "product",
+      "to": "cache",
+      "type": "dependency"
+    },
+    {
+      "from": "product",
+      "to": "search",
+      "type": "http",
+      "label": "Indexing"
+    },
+    {
+      "from": "cart",
+      "to": "cache",
+      "type": "db_query"
+    },
+    {
+      "from": "cart",
+      "to": "inventory",
+      "type": "grpc"
+    },
+    {
+      "from": "order",
+      "to": "order_db",
+      "type": "db_query"
+    },
+    {
+      "from": "order",
+      "to": "payment",
+      "type": "grpc"
+    },
+    {
+      "from": "order",
+      "to": "queue",
+      "type": "solid",
+      "label": "Order Events"
+    },
+    {
+      "from": "payment",
+      "to": "queue",
+      "type": "solid"
+    },
+    {
+      "from": "inventory",
+      "to": "inventory_db",
+      "type": "db_query"
+    },
+    {
+      "from": "queue",
+      "to": "fulfillment",
+      "type": "solid"
+    },
+    {
+      "from": "queue",
+      "to": "notification",
+      "type": "solid"
+    },
+    {
+      "from": "fulfillment",
+      "to": "warehouse_system",
+      "type": "http"
+    },
+    {
+      "from": "notification",
+      "to": "web",
+      "type": "curved",
+      "label": "Email/SMS"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "frontend",
+      "components": [
+        "web",
+        "mobile",
+        "cdn"
+      ],
+      "label": "Client Tier"
+    },
+    {
+      "id": "services",
+      "components": [
+        "product",
+        "cart",
+        "order",
+        "payment",
+        "inventory"
+      ],
+      "label": "Business Logic"
+    },
+    {
+      "id": "async",
+      "components": [
+        "fulfillment",
+        "notification"
+      ],
+      "label": "Async Processing"
+    }
+  ]
+}

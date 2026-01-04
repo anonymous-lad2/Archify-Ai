@@ -1,0 +1,158 @@
+{
+  "components": {
+    "merchant_web": {
+      "type": "client",
+      "label": "Merchant Site"
+    },
+    "merchant_api": {
+      "type": "client",
+      "label": "Merchant API"
+    },
+    "stripe_api": {
+      "type": "gateway",
+      "label": "Stripe API"
+    },
+    "auth": {
+      "type": "microservice",
+      "label": "Auth/ACL"
+    },
+    "payment_svc": {
+      "type": "microservice",
+      "label": "Payment Processor"
+    },
+    "settlement": {
+      "type": "microservice",
+      "label": "Settlement"
+    },
+    "webhook": {
+      "type": "function",
+      "label": "Webhook Dispatcher"
+    },
+    "fraud": {
+      "type": "external",
+      "label": "Fraud Detection ML"
+    },
+    "processor": {
+      "type": "external",
+      "label": "Card Processor"
+    },
+    "bank": {
+      "type": "external",
+      "label": "Bank/ACH"
+    },
+    "payment_db": {
+      "type": "database",
+      "label": "Payment DB"
+    },
+    "ledger_db": {
+      "type": "database",
+      "label": "Ledger (Append-Only)"
+    },
+    "cache": {
+      "type": "cache",
+      "label": "Redis"
+    },
+    "queue": {
+      "type": "queue",
+      "label": "SQS Events"
+    }
+  },
+  "relationships": [
+    {
+      "from": "merchant_web",
+      "to": "stripe_api",
+      "type": "http",
+      "label": "Payment Form"
+    },
+    {
+      "from": "merchant_api",
+      "to": "stripe_api",
+      "type": "http",
+      "label": "API Call"
+    },
+    {
+      "from": "stripe_api",
+      "to": "auth",
+      "type": "grpc"
+    },
+    {
+      "from": "stripe_api",
+      "to": "payment_svc",
+      "type": "grpc"
+    },
+    {
+      "from": "payment_svc",
+      "to": "fraud",
+      "type": "http",
+      "label": "Risk Score"
+    },
+    {
+      "from": "payment_svc",
+      "to": "processor",
+      "type": "http",
+      "label": "Charge"
+    },
+    {
+      "from": "payment_svc",
+      "to": "payment_db",
+      "type": "db_query"
+    },
+    {
+      "from": "payment_svc",
+      "to": "cache",
+      "type": "dependency"
+    },
+    {
+      "from": "payment_svc",
+      "to": "queue",
+      "type": "solid",
+      "label": "Events"
+    },
+    {
+      "from": "queue",
+      "to": "settlement",
+      "type": "solid"
+    },
+    {
+      "from": "queue",
+      "to": "webhook",
+      "type": "solid"
+    },
+    {
+      "from": "settlement",
+      "to": "ledger_db",
+      "type": "db_query",
+      "label": "Record"
+    },
+    {
+      "from": "settlement",
+      "to": "bank",
+      "type": "http",
+      "label": "ACH Transfer"
+    },
+    {
+      "from": "webhook",
+      "to": "merchant_web",
+      "type": "curved",
+      "label": "HTTP POST"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "core",
+      "components": [
+        "payment_svc",
+        "fraud"
+      ],
+      "label": "Payment Core"
+    },
+    {
+      "id": "settlement",
+      "components": [
+        "settlement",
+        "ledger_db"
+      ],
+      "label": "Settlement"
+    }
+  ]
+}

@@ -1,27 +1,16 @@
 {
   "type_mapping": {
-    "client": {
-      "shape": "rounded_rectangle",
-      "fillcolor": "#7C3AED"
-    },
-    "infrastructure": {
-      "shape": "circle",
-      "fillcolor": "#1D4ED8"
-    },
-    "gateway": {
-      "shape": "hexagon", 
-      "fillcolor": "#059669"
-    },
-    "microservice": {
-      "shape": "rounded_square",
-      "fillcolor": "#DC2626"
-    },
-    "database": {
-      "shape": "cylinder",
-      "fillcolor": "#B91C1C"
-    }
+    "client": { "shape": "rounded_rectangle", "fillcolor": "#7C3AED" },
+    "infrastructure": { "shape": "circle", "fillcolor": "#1D4ED8" },
+    "gateway": { "shape": "hexagon", "fillcolor": "#059669" },
+    "microservice": { "shape": "rounded_square", "fillcolor": "#DC2626" },
+    "database": { "shape": "cylinder", "fillcolor": "#B91C1C" },
+    "queue": { "shape": "queue" },
+    "cache": { "shape": "cache" },
+    "actor": { "shape": "user" },
+    "function": { "shape": "lambda" },
+    "external": { "shape": "cloud" }
   },
-  
   "node_styles": {
     "rounded_rectangle": {
       "shape": "box",
@@ -57,20 +46,76 @@
       "width": "1.3",
       "height": "1.1",
       "penwidth": "1.2"
-    }
+    },
+    "default": {
+      "shape": "box",
+      "style": "filled",
+      "width": "1.2",
+      "height": "0.8",
+      "penwidth": "1.2"
+    },
+    "cloud": {
+      "shape": "ellipse",
+      "style": "filled,dashed",
+      "width": "1.5",
+      "height": "0.9"
+    },
+    "queue": { "shape": "parallelogram", "style": "filled" },
+    "cache": { "shape": "folder", "style": "filled" },
+    "user": { "shape": "box", "style": "rounded,filled" },
+    "lambda": { "shape": "doublecircle", "style": "filled" }
   },
-  
   "edge_styles": {
-    "solid": {"color": "#3B82F6", "style": "solid", "penwidth": "2"},
-    "dashed": {"color": "#EA580C", "style": "dashed", "penwidth": "2"},
-    "dotted": {"color": "#059669", "style": "dotted", "penwidth": "2"}
+    "solid": { "color": "#3B82F6", "style": "solid", "penwidth": "2" },
+    "dashed": { "color": "#EA580C", "style": "dashed", "penwidth": "2" },
+    "dotted": { "color": "#059669", "style": "dotted", "penwidth": "2" },
+    "dependency": {
+      "style": "dashed",
+      "arrowhead": "normal",
+      "color": "#6B7280"
+    },
+    "http": {
+      "style": "solid",
+      "arrowhead": "normal",
+      "color": "#3B82F6",
+      "penwidth": "2.5"
+    },
+    "grpc": { "style": "solid", "arrowhead": "obox", "color": "#10B981" },
+    "db_query": { "style": "dotted", "arrowhead": "crow", "color": "#F59E0B" },
+    "composition": {
+      "arrowhead": "diamond",
+      "style": "bold",
+      "color": "#8B5CF6"
+    },
+    "aggregation": {
+      "arrowhead": "odiamond",
+      "style": "solid",
+      "color": "#EC4899"
+    },
+    "curved": { "style": "curved", "arrowhead": "vee" }
   },
-  
   "global": {
     "bgcolor": "#F1F5F9",
     "fontname": "Arial",
     "dpi": "300",
     "node_fontcolor": "white",
-    "edge_fontcolor": "#1E293B"
+    "edge_fontcolor": "#1E293B",
+    "default_node_style": "default",
+    "default_edge_style": "solid"
+  },
+  "features": {
+    "custom_shape": true,
+    "arrowheads": [
+      "normal",
+      "vee",
+      "crow",
+      "diamond",
+      "odiamond",
+      "obox",
+      "open"
+    ],
+    "splines": ["true", "curved", "ortho", "line"],
+    "clusters": true,
+    "rankdir": "LR"
   }
 }

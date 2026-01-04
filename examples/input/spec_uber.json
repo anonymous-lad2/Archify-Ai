@@ -1,0 +1,175 @@
+{
+  "components": {
+    "rider_app": {
+      "type": "client",
+      "label": "Rider App"
+    },
+    "driver_app": {
+      "type": "client",
+      "label": "Driver App"
+    },
+    "api_gw": {
+      "type": "gateway",
+      "label": "API Gateway"
+    },
+    "auth": {
+      "type": "microservice",
+      "label": "Auth"
+    },
+    "matching": {
+      "type": "microservice",
+      "label": "Matching Engine"
+    },
+    "location": {
+      "type": "microservice",
+      "label": "Location Service"
+    },
+    "payment": {
+      "type": "microservice",
+      "label": "Payment"
+    },
+    "notification": {
+      "type": "function",
+      "label": "Notification Lambda"
+    },
+    "geospatial_db": {
+      "type": "database",
+      "label": "PostGIS DB"
+    },
+    "user_db": {
+      "type": "database",
+      "label": "User DB"
+    },
+    "cache": {
+      "type": "cache",
+      "label": "Redis Cluster"
+    },
+    "pubsub": {
+      "type": "queue",
+      "label": "Kafka/Pub-Sub"
+    },
+    "ml_service": {
+      "type": "external",
+      "label": "ML Model Service"
+    },
+    "payment_gateway": {
+      "type": "external",
+      "label": "Stripe/Square"
+    }
+  },
+  "relationships": [
+    {
+      "from": "rider_app",
+      "to": "api_gw",
+      "type": "http",
+      "label": "Booking"
+    },
+    {
+      "from": "driver_app",
+      "to": "api_gw",
+      "type": "http",
+      "label": "Status"
+    },
+    {
+      "from": "api_gw",
+      "to": "auth",
+      "type": "grpc"
+    },
+    {
+      "from": "api_gw",
+      "to": "matching",
+      "type": "grpc"
+    },
+    {
+      "from": "api_gw",
+      "to": "location",
+      "type": "grpc"
+    },
+    {
+      "from": "api_gw",
+      "to": "payment",
+      "type": "grpc"
+    },
+    {
+      "from": "location",
+      "to": "geospatial_db",
+      "type": "db_query",
+      "label": "Spatial Query"
+    },
+    {
+      "from": "location",
+      "to": "pubsub",
+      "type": "solid",
+      "label": "Location Updates"
+    },
+    {
+      "from": "matching",
+      "to": "cache",
+      "type": "dependency"
+    },
+    {
+      "from": "matching",
+      "to": "ml_service",
+      "type": "curved",
+      "label": "ETA Prediction"
+    },
+    {
+      "from": "payment",
+      "to": "payment_gateway",
+      "type": "http",
+      "label": "Charge"
+    },
+    {
+      "from": "payment",
+      "to": "pubsub",
+      "type": "solid",
+      "label": "Payment Events"
+    },
+    {
+      "from": "pubsub",
+      "to": "notification",
+      "type": "solid",
+      "label": "Trigger"
+    },
+    {
+      "from": "notification",
+      "to": "rider_app",
+      "type": "curved",
+      "label": "Push"
+    },
+    {
+      "from": "notification",
+      "to": "driver_app",
+      "type": "curved",
+      "label": "Push"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "clients",
+      "components": [
+        "rider_app",
+        "driver_app"
+      ],
+      "label": "Mobile Clients"
+    },
+    {
+      "id": "core",
+      "components": [
+        "matching",
+        "location",
+        "payment"
+      ],
+      "label": "Core Services"
+    },
+    {
+      "id": "storage",
+      "components": [
+        "geospatial_db",
+        "user_db",
+        "cache"
+      ],
+      "label": "Data"
+    }
+  ]
+}

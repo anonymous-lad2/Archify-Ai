@@ -4,7 +4,8 @@ from backend.api.topic_extractor import extract_topic
 from backend.api.resource_links import get_resource_links
 from backend.api.scraper import scrape_multiple
 from backend.api.architecture_generator import generate_architecture
-from backend.api.svg_diagram_generator import generate_svg_diagram
+from backend.api.svg_diagram_generator import generate_animated_svg_correct_flow
+from backend.api.image_generator import generate_diagram
 
 generate_architecture_router = APIRouter(
     prefix="/architecture",
@@ -25,7 +26,7 @@ def generate_architecture_endpoint(req: ArchitectureRequest):
         raw_content=raw_content
     )
 
-    # Generate SVG diagram from the architecture response
+    # Generate SVG and Image diagram from the architecture response
     try:
         diagram_filename = f"{topic.lower().replace(' ', '_')}_{req.level}_diagram"
         diagram_data = {
@@ -33,11 +34,13 @@ def generate_architecture_endpoint(req: ArchitectureRequest):
             'components': architecture.get("components", {}),
             'relationships': architecture.get("relationships", [])
         }
-        svg_content = generate_svg_diagram(
-            data=diagram_data,
-            output=diagram_filename
-        )
-        print(f"✅ SVG diagram generated: {diagram_filename}.svg")
+
+        # generating SVG
+        generate_animated_svg_correct_flow(config_path="utils/design_rules.json",spec=diagram_data,output=f"{diagram_filename}.svg")
+
+        # generating Image
+        generate_diagram(config_path="utils/design_rules.json",spec=diagram_data,output=f"{diagram_filename}.png")
+
     except Exception as e:
         print(f"⚠️ Diagram generation failed: {e}")
 

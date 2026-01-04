@@ -1,0 +1,121 @@
+{
+  "components": {
+    "app": {
+      "type": "client",
+      "label": "User Events"
+    },
+    "kafka": {
+      "type": "queue",
+      "label": "Kafka Cluster"
+    },
+    "spark": {
+      "type": "function",
+      "label": "Spark Streaming"
+    },
+    "hdfs": {
+      "type": "database",
+      "label": "HDFS Data Lake"
+    },
+    "hive": {
+      "type": "microservice",
+      "label": "Hive Warehouse"
+    },
+    "presto": {
+      "type": "external",
+      "label": "Presto Query Engine"
+    },
+    "ml_pipeline": {
+      "type": "function",
+      "label": "ML Training"
+    },
+    "airflow": {
+      "type": "infrastructure",
+      "label": "Airflow Orchestrator"
+    },
+    "s3": {
+      "type": "database",
+      "label": "S3 Parquet"
+    },
+    "bi_tool": {
+      "type": "client",
+      "label": "BI Dashboard"
+    }
+  },
+  "relationships": [
+    {
+      "from": "app",
+      "to": "kafka",
+      "type": "solid",
+      "label": "Events"
+    },
+    {
+      "from": "kafka",
+      "to": "spark",
+      "type": "solid",
+      "label": "Stream"
+    },
+    {
+      "from": "spark",
+      "to": "hdfs",
+      "type": "db_query",
+      "label": "Write"
+    },
+    {
+      "from": "hdfs",
+      "to": "hive",
+      "type": "db_query"
+    },
+    {
+      "from": "hive",
+      "to": "presto",
+      "type": "http"
+    },
+    {
+      "from": "presto",
+      "to": "bi_tool",
+      "type": "http",
+      "label": "SQL Results"
+    },
+    {
+      "from": "airflow",
+      "to": "spark",
+      "type": "curved",
+      "label": "Trigger Job"
+    },
+    {
+      "from": "airflow",
+      "to": "ml_pipeline",
+      "type": "curved"
+    },
+    {
+      "from": "ml_pipeline",
+      "to": "s3",
+      "type": "db_query",
+      "label": "Models"
+    },
+    {
+      "from": "spark",
+      "to": "s3",
+      "type": "db_query",
+      "label": "Checkpoints"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "ingestion",
+      "components": [
+        "kafka",
+        "spark"
+      ],
+      "label": "Real-Time Ingestion"
+    },
+    {
+      "id": "storage",
+      "components": [
+        "hdfs",
+        "s3"
+      ],
+      "label": "Data Storage"
+    }
+  ]
+}
