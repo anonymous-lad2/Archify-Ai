@@ -82,60 +82,125 @@ class EnhancedSVGGenerator:
         
         return svg_content
     
-    def _calculate_hierarchical_layout(self, components: Dict, relationships: List) -> Dict[str, Tuple[float, float]]:
-        """
-        Calculate hierarchical layout based on component types and relationships.
-        Layers: Client -> Gateway -> Services -> Data
-        """
-        # Categorize components by layer
-        layers = {
-            'client': [],
-            'gateway': [],
-            'service': [],
-            'data': []
-        }
+    # def _calculate_hierarchical_layout(self, components: Dict, relationships: List) -> Dict[str, Tuple[float, float]]:
+    #     """
+    #     Calculate hierarchical layout based on component types and relationships.
+    #     Layers: Client -> Gateway -> Services -> Data
+    #     """
+    #     # Categorize components by layer
+    #     layers = {
+    #         'client': [],
+    #         'gateway': [],
+    #         'service': [],
+    #         'data': []
+    #     }
         
-        component_names = list(components.keys())
+    #     component_names = list(components.keys())
         
-        for name, comp in components.items():
-            comp_type = comp.get('type', 'infrastructure').lower()
+    #     for name, comp in components.items():
+    #         comp_type = comp.get('type', 'infrastructure').lower()
             
-            if comp_type in ['client']:
-                layers['client'].append(name)
-            elif comp_type in ['gateway', 'external']:
-                layers['gateway'].append(name)
-            elif comp_type in ['database', 'cache', 'queue']:
-                layers['data'].append(name)
-            else:
-                layers['service'].append(name)
+    #         if comp_type in ['client']:
+    #             layers['client'].append(name)
+    #         elif comp_type in ['gateway', 'external']:
+    #             layers['gateway'].append(name)
+    #         elif comp_type in ['database', 'cache', 'queue']:
+    #             layers['data'].append(name)
+    #         else:
+    #             layers['service'].append(name)
         
-        # Canvas dimensions
+    #     # Canvas dimensions
+    #     canvas_width = 1400
+    #     canvas_height = 900
+    #     margin_x = 150
+    #     margin_y = 150
+    #     layer_height = 180
+        
+    #     positions = {}
+    #     current_y = margin_y
+        
+    #     # Position each layer
+    #     for layer_name in ['client', 'gateway', 'service', 'data']:
+    #         layer_components = layers[layer_name]
+    #         if not layer_components:
+    #             continue
+            
+    #         num_in_layer = len(layer_components)
+    #         spacing = (canvas_width - 2 * margin_x) / max(num_in_layer, 1)
+            
+    #         for i, comp_name in enumerate(layer_components):
+    #             x = margin_x + (i + 0.5) * spacing
+    #             y = current_y
+    #             positions[comp_name] = (x, y)
+            
+    #         current_y += layer_height
+        
+    #     return positions
+
+    def _calculate_hierarchical_layout(self, components, relationships):
+        # Step 1: Build graph
+        graph = {name: [] for name in components}
+        indegree = {name: 0 for name in components}
+
+        for rel in relationships:
+            src = rel.get("from")
+            dst = rel.get("to")
+            if src in graph and dst in graph:
+                graph[src].append(dst)
+                indegree[dst] += 1
+
+        # Step 2: Topological-style level assignment (SAFE)
+        levels = {}
+        queue = []
+
+        indegree_copy = indegree.copy()
+
+        # Start with all zero-indegree nodes
+        for node, deg in indegree_copy.items():
+            if deg == 0:
+                levels[node] = 0
+                queue.append(node)
+
+        # If no root nodes (cycle), force-start
+        if not queue:
+            for node in components:
+                levels[node] = 0
+                queue.append(node)
+            indegree_copy = {k: 0 for k in indegree_copy}
+
+        while queue:
+            node = queue.pop(0)
+            for nei in graph[node]:
+                next_level = levels[node] + 1
+                if nei not in levels or levels[nei] < next_level:
+                    levels[nei] = next_level
+                indegree_copy[nei] -= 1
+                if indegree_copy[nei] <= 0:
+                    queue.append(nei)
+
+        # Step 3: Group nodes by level
+        level_map = {}
+        for node in components:
+            lvl = levels.get(node, 0)
+            level_map.setdefault(lvl, []).append(node)
+
+        # Step 4: Assign positions
         canvas_width = 1400
-        canvas_height = 900
-        margin_x = 150
-        margin_y = 150
-        layer_height = 180
-        
+        margin_x = 140
+        margin_y = 160
+        level_gap = 200
+
         positions = {}
-        current_y = margin_y
-        
-        # Position each layer
-        for layer_name in ['client', 'gateway', 'service', 'data']:
-            layer_components = layers[layer_name]
-            if not layer_components:
-                continue
-            
-            num_in_layer = len(layer_components)
-            spacing = (canvas_width - 2 * margin_x) / max(num_in_layer, 1)
-            
-            for i, comp_name in enumerate(layer_components):
+
+        for lvl, nodes in level_map.items():
+            spacing = (canvas_width - 2 * margin_x) / max(len(nodes), 1)
+            for i, node in enumerate(nodes):
                 x = margin_x + (i + 0.5) * spacing
-                y = current_y
-                positions[comp_name] = (x, y)
-            
-            current_y += layer_height
-        
+                y = margin_y + lvl * level_gap
+                positions[node] = (x, y)
+
         return positions
+
     
     def _generate_background(self) -> str:
         """Generate modern gradient background."""
@@ -358,74 +423,156 @@ class EnhancedSVGGenerator:
         
         return '\n'.join(svg_parts)
     
-    def _draw_bezier_edge(self, x1: float, y1: float, x2: float, y2: float, 
-                         line_type: str, rel_type: str, arrow: bool) -> str:
-        """Draw bezier curve edge."""
-        # Calculate control points for smooth curve
+    # def _draw_bezier_edge(self, x1: float, y1: float, x2: float, y2: float, 
+    #                      line_type: str, rel_type: str, arrow: bool) -> str:
+    #     """Draw bezier curve edge."""
+    #     # Calculate control points for smooth curve
+    #     dx = x2 - x1
+    #     dy = y2 - y1
+        
+    #     # Control points at 1/3 and 2/3 with vertical offset
+    #     cx1 = x1 + dx * 0.3
+    #     cy1 = y1 + dy * 0.3 + 30
+    #     cx2 = x1 + dx * 0.7
+    #     cy2 = y1 + dy * 0.7 + 30
+        
+    #     # Edge color based on relationship type
+    #     color_map = {
+    #         'request': '#3B82F6',
+    #         'response': '#10B981',
+    #         'sync_call': '#3B82F6',
+    #         'async_event': '#8B5CF6',
+    #         'read_write': '#EF4444'
+    #     }
+    #     color = color_map.get(rel_type, '#6B7280')
+        
+    #     # Derive line style from relationship semantics (DO NOT trust LLM)
+    #     if rel_type == "async_event":
+    #         stroke_dasharray = ' stroke-dasharray="6,6"'   
+    #     elif rel_type == "read_write":
+    #         stroke_dasharray = ' stroke-dasharray="2,4"'   
+    #     else:
+    #          stroke_dasharray = ''                           
+
+        
+    #     path = f'M {x1},{y1} C {cx1},{cy1} {cx2},{cy2} {x2},{y2}'
+        
+    #     svg = f'''
+    #     <g class="edge">
+    #         <path d="{path}" fill="none" stroke="{color}" 
+    #               stroke-width="2.5" opacity="0.7"{stroke_dasharray}/>
+    #     '''
+        
+    #     if arrow:
+    #         # Calculate arrow at end point
+    #         angle = math.atan2(y2 - cy2, x2 - cx2)
+    #         arrow_size = 12
+            
+    #         p1x = x2 - arrow_size * math.cos(angle - math.pi/6)
+    #         p1y = y2 - arrow_size * math.sin(angle - math.pi/6)
+    #         p2x = x2 - arrow_size * math.cos(angle + math.pi/6)
+    #         p2y = y2 - arrow_size * math.sin(angle + math.pi/6)
+            
+    #         svg += f'''
+    #         <polygon points="{x2},{y2} {p1x},{p1y} {p2x},{p2y}" 
+    #                  fill="{color}" opacity="0.8"/>
+    #         '''
+        
+    #     # Add label
+    #     mid_x = (x1 + x2) / 2
+    #     mid_y = (y1 + y2) / 2 + 20
+    #     SHOW_LABELS = {"async_event", "read_write"}
+        
+        
+    #     svg += f'''
+    #         <rect x="{mid_x - len(label)*3.5}" y="{mid_y - 12}" 
+    #               width="{len(label)*7}" height="20" rx="4" 
+    #               fill="white" opacity="0.9"/>
+    #         <text x="{mid_x}" y="{mid_y + 3}" text-anchor="middle" 
+    #               font-size="11" fill="#1e293b" font-weight="500"
+    #               font-family="system-ui, -apple-system, sans-serif">{label}</text>
+    #     </g>
+    #     '''
+        
+    #     return svg
+
+    def _draw_bezier_edge(self, x1: float, y1: float, x2: float, y2: float,
+                      line_type: str, rel_type: str, arrow: bool) -> str:
+        """Draw bezier curve edge with semantic styling."""
+
+        # Calculate control points for smooth curve (top → bottom bias)
         dx = x2 - x1
         dy = y2 - y1
-        
-        # Control points at 1/3 and 2/3 with vertical offset
+
         cx1 = x1 + dx * 0.3
-        cy1 = y1 + dy * 0.3 + 30
+        cy1 = y1 + dy * 0.3 + 40
         cx2 = x1 + dx * 0.7
-        cy2 = y1 + dy * 0.7 + 30
-        
+        cy2 = y1 + dy * 0.7 + 40
+
         # Edge color based on relationship type
         color_map = {
-            'request': '#3B82F6',
-            'response': '#10B981',
-            'sync_call': '#3B82F6',
-            'async_event': '#8B5CF6',
-            'read_write': '#EF4444'
+            "request": "#3B82F6",
+            "sync_call": "#3B82F6",
+            "async_event": "#8B5CF6",
+            "read_write": "#EF4444",
         }
-        color = color_map.get(rel_type, '#6B7280')
-        
-        stroke_dasharray = ''
-        if line_type == 'dashed':
-            stroke_dasharray = ' stroke-dasharray="8,4"'
-        elif line_type == 'dotted':
-            stroke_dasharray = ' stroke-dasharray="2,3"'
-        
-        path = f'M {x1},{y1} C {cx1},{cy1} {cx2},{cy2} {x2},{y2}'
-        
+        color = color_map.get(rel_type, "#6B7280")
+
+        # Derive line style from semantics (NOT LLM hints)
+        if rel_type == "async_event":
+            stroke_dasharray = ' stroke-dasharray="6,6"'
+            stroke_width = "2"
+        elif rel_type == "read_write":
+            stroke_dasharray = ' stroke-dasharray="2,4"'
+            stroke_width = "2.2"
+        else:
+            stroke_dasharray = ""
+            stroke_width = "2.5"
+
+        path = f"M {x1},{y1} C {cx1},{cy1} {cx2},{cy2} {x2},{y2}"
+
         svg = f'''
         <g class="edge">
-            <path d="{path}" fill="none" stroke="{color}" 
-                  stroke-width="2.5" opacity="0.7"{stroke_dasharray}/>
+            <path d="{path}" fill="none" stroke="{color}"
+                  stroke-width="{stroke_width}" opacity="0.7"{stroke_dasharray}/>
         '''
-        
+
+        # Arrowhead
         if arrow:
-            # Calculate arrow at end point
             angle = math.atan2(y2 - cy2, x2 - cx2)
             arrow_size = 12
-            
-            p1x = x2 - arrow_size * math.cos(angle - math.pi/6)
-            p1y = y2 - arrow_size * math.sin(angle - math.pi/6)
-            p2x = x2 - arrow_size * math.cos(angle + math.pi/6)
-            p2y = y2 - arrow_size * math.sin(angle + math.pi/6)
-            
+
+            p1x = x2 - arrow_size * math.cos(angle - math.pi / 6)
+            p1y = y2 - arrow_size * math.sin(angle - math.pi / 6)
+            p2x = x2 - arrow_size * math.cos(angle + math.pi / 6)
+            p2y = y2 - arrow_size * math.sin(angle + math.pi / 6)
+
             svg += f'''
-            <polygon points="{x2},{y2} {p1x},{p1y} {p2x},{p2y}" 
-                     fill="{color}" opacity="0.8"/>
+            <polygon points="{x2},{y2} {p1x},{p1y} {p2x},{p2y}"
+                     fill="{color}" opacity="0.85"/>
             '''
-        
-        # Add label
-        mid_x = (x1 + x2) / 2
-        mid_y = (y1 + y2) / 2 + 20
-        label = rel_type.replace('_', ' ').title()
-        
-        svg += f'''
-            <rect x="{mid_x - len(label)*3.5}" y="{mid_y - 12}" 
-                  width="{len(label)*7}" height="20" rx="4" 
-                  fill="white" opacity="0.9"/>
-            <text x="{mid_x}" y="{mid_y + 3}" text-anchor="middle" 
+
+        # Render labels ONLY when meaningful (prevents collisions)
+        SHOW_LABELS = {"async_event", " "}
+
+        if rel_type in SHOW_LABELS:
+            label = rel_type.replace("_", " ").title()
+            mid_x = (x1 + x2) / 2
+            mid_y = (y1 + y2) / 2 + 18
+
+            svg += f'''
+            <rect x="{mid_x - len(label) * 3.5}" y="{mid_y - 12}"
+                  width="{len(label) * 7}" height="20" rx="4"
+                  fill="white" opacity="0.85"/>
+            <text x="{mid_x}" y="{mid_y + 3}" text-anchor="middle"
                   font-size="11" fill="#1e293b" font-weight="500"
                   font-family="system-ui, -apple-system, sans-serif">{label}</text>
-        </g>
-        '''
+            '''
+
+        svg += "</g>"
         
         return svg
+    
     
     def _svg_header(self) -> str:
         """Generate SVG header."""
