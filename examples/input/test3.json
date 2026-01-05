@@ -1,0 +1,143 @@
+{
+    "topic": "Uber System Architecture",
+    "level": "HLD",
+    "components": {
+        "Client Apps (Rider & Driver)": {
+            "type": "client",
+            "shape": "rounded_rectangle",
+            "color": "#4A90E2",
+            "description": "Mobile apps for riders to book rides and for drivers to manage trips."
+        },
+        "API Gateway": {
+            "type": "gateway",
+            "shape": "hexagon",
+            "color": "#7B68EE",
+            "description": "Single entry point for all client requests, handling authentication, routing, and load balancing."
+        },
+        "Trip Management Service": {
+            "type": "microservice",
+            "shape": "rounded_square",
+            "color": "#50C878",
+            "description": "Manages the lifecycle of a trip, including booking, pricing, and history."
+        },
+        "Driver Management Service": {
+            "type": "microservice",
+            "shape": "rounded_square",
+            "color": "#50C878",
+            "description": "Handles driver profiles, real-time location updates, and availability status."
+        },
+        "Dispatch Service": {
+            "type": "microservice",
+            "shape": "rounded_square",
+            "color": "#FFA500",
+            "description": "Core matching engine that pairs available drivers with riders using location data."
+        },
+        "Real-time Messaging": {
+            "type": "queue",
+            "shape": "stack",
+            "color": "#F781BF",
+            "description": "Facilitates asynchronous communication and data streaming for location updates and notifications."
+        },
+        "Databases": {
+            "type": "database",
+            "shape": "cylinder",
+            "color": "#FF6B6B",
+            "description": "Distributed databases for storing user profiles, trip details, and payment information."
+        },
+        "External Services (Maps, Payments)": {
+            "type": "external",
+            "shape": "shield",
+            "color": "#A9A9A9",
+            "description": "Third-party services for maps, navigation, and payment processing."
+        }
+    },
+    "relationships": [
+        {
+            "from": "Client Apps (Rider & Driver)",
+            "to": "API Gateway",
+            "type": "request",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "API Gateway",
+            "to": "Trip Management Service",
+            "type": "sync_call",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "API Gateway",
+            "to": "Driver Management Service",
+            "type": "sync_call",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Driver Management Service",
+            "to": "Real-time Messaging",
+            "type": "async_event",
+            "line": "dashed",
+            "arrow": true
+        },
+        {
+            "from": "Trip Management Service",
+            "to": "Dispatch Service",
+            "type": "request",
+            "line": "dashed",
+            "arrow": true
+        },
+        {
+            "from": "Dispatch Service",
+            "to": "Driver Management Service",
+            "type": "read_write",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Dispatch Service",
+            "to": "Real-time Messaging",
+            "type": "async_event",
+            "line": "dashed",
+            "arrow": true
+        },
+        {
+            "from": "Real-time Messaging",
+            "to": "Client Apps (Rider & Driver)",
+            "type": "async_event",
+            "line": "dashed",
+            "arrow": true
+        },
+        {
+            "from": "Trip Management Service",
+            "to": "Databases",
+            "type": "read_write",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Driver Management Service",
+            "to": "Databases",
+            "type": "read_write",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Trip Management Service",
+            "to": "External Services (Maps, Payments)",
+            "type": "sync_call",
+            "line": "dotted",
+            "arrow": true
+        }
+    ],
+    "resources": [
+        "https://en.wikipedia.org/wiki/Ride_hailing",
+        "https://aws.amazon.com/solutions/case-studies/uber/",
+        "https://www.uber.com/newsroom/uber-technology/",
+        "https://martinfowler.com/articles/patterns-of-distributed-systems/",
+        "https://www.nginx.com/blog/microservices-use-case-deployment-patterns/",
+        "https://en.wikipedia.org/wiki/Scalable_system",
+        "https://www.nginx.com/blog/"
+    ],
+    "raw_content": "[Source 1]\nOnline vehicle for hire service Yellow Uber car in Moscow A ridesharing company (or ridehailing service ) is a company (or service offered by a company) that, via websites and mobile apps , matches passengers with drivers of vehicles for hire that, unlike traditional taxis , cannot legally be hailed from the street. In most cases, the company sets fares, which may vary using a dynamic pricing model based on local supply and demand at the time of the booking and are quoted to the customer in advance, and receives a commission from each booking. The vehicles used in ridesharing/ridehailing service are called app-taxis or e-taxis . Ridesharing companies were first founded in the 2010s following the proliferation of the Internet and mobile apps. [ 1 ] In the 2020s, a few companies began offering rides in robotaxis . The legality of ridesharing companies by jurisdiction varies; in some areas they are considered to be illegal taxi operations , while in other areas, they are subject to regulations that can include requirements for driver background checks , fares, caps on the number of drivers in an area, insurance, licensing, and minimum wage . Studies have shown that ridesharing companies have created net jobs [ 2 ] and improved the efficiency of drivers of vehicles for hire due to advanced algorithms that pair riders with drivers. [ 3 ] They have been subject to criticism for seeking to classify drivers as independent contractors , enabling them to withhold worker protections that they would have been required to provide to employees. [ 4 ] [ 5 ] Studies have shown that especially in cities where it competes with public transport , ridesharing contributes to traffic congestion , reduces public transport use, has no substantial impact on vehicle ownership, and increases automobile dependency . [ 6 ] [ 7 ] [ 8 ] Ride-hailing services are increasingly adopting the use of autonomous vehicles. For example, on November 26 2025, WeRide , a Chinese autonomous vehicle"
+}

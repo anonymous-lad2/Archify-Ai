@@ -1,0 +1,667 @@
+{
+  "app_name": "System Design Architect",
+  "version": "1.0.0",
+  "description": "AI-powered system design architecture generator that takes topics and generates professional diagrams",
+  "design_level": "HLD",
+  "components": {
+    "user_interface": {
+      "type": "client",
+      "label": "User Interface",
+      "description": "CLI interface for user input collection",
+      "technology": "Python Click/Prompt",
+      "responsibilities": [
+        "Collect topic from user",
+        "Select design level (HLD/LLD)",
+        "Input optional constraints",
+        "Display progress indicators",
+        "Show generated outputs"
+      ]
+    },
+    "input_validator": {
+      "type": "microservice",
+      "label": "Input Validator",
+      "description": "Validates user input and normalizes data",
+      "technology": "Python",
+      "responsibilities": [
+        "Validate topic string",
+        "Verify design level",
+        "Sanitize constraints",
+        "Check for malicious input",
+        "Normalize input format"
+      ]
+    },
+    "llm_query_service": {
+      "type": "microservice",
+      "label": "LLM Query Service",
+      "description": "Queries LLM to find relevant articles and resources",
+      "technology": "Anthropic Claude API / OpenAI GPT / Google Gemini",
+      "responsibilities": [
+        "Craft LLM prompt for article search",
+        "Query Claude/GPT/Gemini API",
+        "Parse LLM response",
+        "Extract article links and summaries",
+        "Handle API failures with fallbacks"
+      ]
+    },
+    "link_ranker": {
+      "type": "microservice",
+      "label": "Link Ranker",
+      "description": "Ranks and filters links by quality and relevance",
+      "technology": "Python with scoring algorithms",
+      "responsibilities": [
+        "Score links by domain authority",
+        "Filter duplicate links",
+        "Remove low-quality sources",
+        "Select top 5-8 links",
+        "Sort by relevance"
+      ]
+    },
+    "web_scraper": {
+      "type": "microservice",
+      "label": "Web Scraper",
+      "description": "Scrapes content from selected web pages",
+      "technology": "BeautifulSoup, Requests",
+      "responsibilities": [
+        "Fetch web page content",
+        "Parse HTML structure",
+        "Extract main article text",
+        "Clean HTML markup",
+        "Limit content to 500-1000 chars per article",
+        "Handle network errors"
+      ]
+    },
+    "content_processor": {
+      "type": "microservice",
+      "label": "Content Processor",
+      "description": "Processes and cleans scraped content",
+      "technology": "Python NLP utilities",
+      "responsibilities": [
+        "Remove HTML tags",
+        "Clean whitespace",
+        "Normalize text encoding",
+        "Remove duplicate content",
+        "Minimize text for cost savings"
+      ]
+    },
+    "architecture_generator": {
+      "type": "microservice",
+      "label": "Architecture Generator",
+      "description": "Generates architecture components and relationships from content",
+      "technology": "Anthropic Claude API",
+      "responsibilities": [
+        "Craft prompt with scraped content",
+        "Query Claude for architecture generation",
+        "Parse component definitions",
+        "Extract relationships",
+        "Identify clusters/groups",
+        "Validate output structure"
+      ]
+    },
+    "spec_builder": {
+      "type": "microservice",
+      "label": "Spec Builder",
+      "description": "Builds standardized JSON architecture specification",
+      "technology": "Python JSON builder",
+      "responsibilities": [
+        "Create component objects",
+        "Define relationships with types",
+        "Establish clusters",
+        "Add metadata (labels, descriptions)",
+        "Validate JSON structure",
+        "Generate spec version"
+      ]
+    },
+    "diagram_generator_png": {
+      "type": "microservice",
+      "label": "PNG Diagram Generator",
+      "description": "Generates professional PNG diagrams",
+      "technology": "Graphviz DOT language",
+      "responsibilities": [
+        "Convert spec to DOT format",
+        "Apply styling and colors",
+        "Layout graph automatically",
+        "Set resolution to 300 DPI",
+        "Render PNG output",
+        "Save to file"
+      ]
+    },
+    "diagram_generator_svg": {
+      "type": "microservice",
+      "label": "SVG Diagram Generator",
+      "description": "Generates animated SVG diagrams for web",
+      "technology": "Python SVG generation",
+      "responsibilities": [
+        "Create SVG structure",
+        "Draw components as shapes",
+        "Draw relationships as edges",
+        "Add CSS animations",
+        "Add hover effects",
+        "Embed styles"
+      ]
+    },
+    "diagram_generator_gif": {
+      "type": "microservice",
+      "label": "GIF Generator",
+      "description": "Generates animated GIF previews",
+      "technology": "Graphviz + PIL/Pillow",
+      "responsibilities": [
+        "Generate multiple PNG frames",
+        "Add animation timing",
+        "Combine frames into GIF",
+        "Optimize file size",
+        "Create 3-5 second loop"
+      ]
+    },
+    "file_storage": {
+      "type": "database",
+      "label": "File Storage",
+      "description": "Stores generated specifications and diagrams",
+      "technology": "Local filesystem / S3",
+      "responsibilities": [
+        "Save JSON spec files",
+        "Store PNG diagrams",
+        "Store SVG diagrams",
+        "Store GIF animations",
+        "Manage file metadata",
+        "Organize by topic/date"
+      ]
+    },
+    "cache_layer": {
+      "type": "cache",
+      "label": "Cache Layer",
+      "description": "Caches scrapped articles and LLM responses",
+      "technology": "Redis / Local memory",
+      "responsibilities": [
+        "Cache article content by URL",
+        "Store LLM responses",
+        "Cache architecture specs",
+        "Set TTL for cache entries",
+        "Retrieve cached data",
+        "Invalidate stale cache"
+      ]
+    },
+    "error_handler": {
+      "type": "microservice",
+      "label": "Error Handler",
+      "description": "Manages errors and fallbacks across pipeline",
+      "technology": "Python exception handling",
+      "responsibilities": [
+        "Catch exceptions at each stage",
+        "Log error details",
+        "Execute fallback mechanisms",
+        "Retry failed operations",
+        "Return user-friendly errors",
+        "Track error metrics"
+      ]
+    },
+    "logger": {
+      "type": "microservice",
+      "label": "Logger",
+      "description": "Logs all operations and metrics",
+      "technology": "Python logging",
+      "responsibilities": [
+        "Log stage completion",
+        "Track execution times",
+        "Record API calls",
+        "Log errors and warnings",
+        "Store logs to file",
+        "Provide debug information"
+      ]
+    },
+    "config_manager": {
+      "type": "microservice",
+      "label": "Config Manager",
+      "description": "Manages configuration and settings",
+      "technology": "JSON config files",
+      "responsibilities": [
+        "Load config from JSON",
+        "Manage visual settings",
+        "Store API keys safely",
+        "Handle environment variables",
+        "Provide config validation",
+        "Support config overrides"
+      ]
+    },
+    "fallback_data_service": {
+      "type": "microservice",
+      "label": "Fallback Data Service",
+      "description": "Provides fallback data for common topics",
+      "technology": "Python data structures",
+      "responsibilities": [
+        "Store pre-scraped articles",
+        "Provide fallback specs",
+        "Handle common topics",
+        "Serve data when LLM fails",
+        "Update fallback data",
+        "Maintain data quality"
+      ]
+    },
+    "monitoring_service": {
+      "type": "microservice",
+      "label": "Monitoring Service",
+      "description": "Monitors system performance and health",
+      "technology": "Python metrics collection",
+      "responsibilities": [
+        "Track response times",
+        "Count successful generations",
+        "Monitor error rates",
+        "Track API usage costs",
+        "Collect performance metrics",
+        "Generate reports"
+      ]
+    },
+    "api_integration": {
+      "type": "gateway",
+      "label": "API Integration Layer",
+      "description": "Manages all external API calls",
+      "technology": "API client libraries",
+      "responsibilities": [
+        "Call Anthropic Claude API",
+        "Call OpenAI GPT API (fallback)",
+        "Call Google Gemini API (fallback)",
+        "Make HTTP requests for scraping",
+        "Handle rate limiting",
+        "Manage API keys securely",
+        "Retry failed requests"
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "from": "user_interface",
+      "to": "input_validator",
+      "type": "http",
+      "label": "sends user input",
+      "description": "User interface passes raw input to validator"
+    },
+    {
+      "from": "input_validator",
+      "to": "llm_query_service",
+      "type": "dependency",
+      "label": "validates then calls",
+      "description": "Validator passes validated input to LLM service"
+    },
+    {
+      "from": "llm_query_service",
+      "to": "api_integration",
+      "type": "http",
+      "label": "queries API",
+      "description": "LLM service calls Claude/GPT/Gemini APIs"
+    },
+    {
+      "from": "llm_query_service",
+      "to": "cache_layer",
+      "type": "dependency",
+      "label": "checks cache",
+      "description": "LLM service checks cache before making API call"
+    },
+    {
+      "from": "llm_query_service",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs operations",
+      "description": "LLM service logs API calls and responses"
+    },
+    {
+      "from": "llm_query_service",
+      "to": "error_handler",
+      "type": "dependency",
+      "label": "error handling",
+      "description": "LLM service delegates error handling"
+    },
+    {
+      "from": "llm_query_service",
+      "to": "fallback_data_service",
+      "type": "dependency",
+      "label": "fallback on error",
+      "description": "Uses fallback data when LLM fails"
+    },
+    {
+      "from": "api_integration",
+      "to": "cache_layer",
+      "type": "dependency",
+      "label": "caches responses",
+      "description": "API integration caches LLM responses"
+    },
+    {
+      "from": "link_ranker",
+      "to": "llm_query_service",
+      "type": "dependency",
+      "label": "receives links",
+      "description": "Link ranker receives links from LLM service"
+    },
+    {
+      "from": "web_scraper",
+      "to": "link_ranker",
+      "type": "dependency",
+      "label": "gets ranked links",
+      "description": "Web scraper receives ranked links to scrape"
+    },
+    {
+      "from": "web_scraper",
+      "to": "api_integration",
+      "type": "http",
+      "label": "HTTP requests",
+      "description": "Web scraper makes HTTP requests via API integration"
+    },
+    {
+      "from": "web_scraper",
+      "to": "cache_layer",
+      "type": "dependency",
+      "label": "caches content",
+      "description": "Web scraper caches scraped content"
+    },
+    {
+      "from": "web_scraper",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs scraping",
+      "description": "Web scraper logs scraping operations"
+    },
+    {
+      "from": "web_scraper",
+      "to": "error_handler",
+      "type": "dependency",
+      "label": "error handling",
+      "description": "Web scraper delegates error handling"
+    },
+    {
+      "from": "content_processor",
+      "to": "web_scraper",
+      "type": "dependency",
+      "label": "receives content",
+      "description": "Content processor receives scraped content"
+    },
+    {
+      "from": "architecture_generator",
+      "to": "content_processor",
+      "type": "dependency",
+      "label": "gets processed content",
+      "description": "Architecture generator receives cleaned content"
+    },
+    {
+      "from": "architecture_generator",
+      "to": "api_integration",
+      "type": "http",
+      "label": "queries LLM",
+      "description": "Architecture generator calls Claude API"
+    },
+    {
+      "from": "architecture_generator",
+      "to": "cache_layer",
+      "type": "dependency",
+      "label": "caches specs",
+      "description": "Architecture generator caches generated specs"
+    },
+    {
+      "from": "architecture_generator",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs generation",
+      "description": "Architecture generator logs generation process"
+    },
+    {
+      "from": "architecture_generator",
+      "to": "error_handler",
+      "type": "dependency",
+      "label": "error handling",
+      "description": "Architecture generator delegates error handling"
+    },
+    {
+      "from": "spec_builder",
+      "to": "architecture_generator",
+      "type": "dependency",
+      "label": "receives components",
+      "description": "Spec builder receives components from architecture generator"
+    },
+    {
+      "from": "spec_builder",
+      "to": "file_storage",
+      "type": "db_query",
+      "label": "saves spec",
+      "description": "Spec builder saves JSON spec to storage"
+    },
+    {
+      "from": "diagram_generator_png",
+      "to": "spec_builder",
+      "type": "dependency",
+      "label": "receives spec",
+      "description": "PNG generator receives spec from builder"
+    },
+    {
+      "from": "diagram_generator_png",
+      "to": "config_manager",
+      "type": "dependency",
+      "label": "gets config",
+      "description": "PNG generator reads visual configuration"
+    },
+    {
+      "from": "diagram_generator_png",
+      "to": "file_storage",
+      "type": "db_query",
+      "label": "saves PNG",
+      "description": "PNG generator saves PNG file to storage"
+    },
+    {
+      "from": "diagram_generator_png",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs generation",
+      "description": "PNG generator logs rendering process"
+    },
+    {
+      "from": "diagram_generator_svg",
+      "to": "spec_builder",
+      "type": "dependency",
+      "label": "receives spec",
+      "description": "SVG generator receives spec from builder"
+    },
+    {
+      "from": "diagram_generator_svg",
+      "to": "config_manager",
+      "type": "dependency",
+      "label": "gets config",
+      "description": "SVG generator reads visual configuration"
+    },
+    {
+      "from": "diagram_generator_svg",
+      "to": "file_storage",
+      "type": "db_query",
+      "label": "saves SVG",
+      "description": "SVG generator saves SVG file to storage"
+    },
+    {
+      "from": "diagram_generator_svg",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs generation",
+      "description": "SVG generator logs rendering process"
+    },
+    {
+      "from": "diagram_generator_gif",
+      "to": "spec_builder",
+      "type": "dependency",
+      "label": "receives spec",
+      "description": "GIF generator receives spec from builder"
+    },
+    {
+      "from": "diagram_generator_gif",
+      "to": "file_storage",
+      "type": "db_query",
+      "label": "saves GIF",
+      "description": "GIF generator saves GIF file to storage"
+    },
+    {
+      "from": "diagram_generator_gif",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs generation",
+      "description": "GIF generator logs animation process"
+    },
+    {
+      "from": "file_storage",
+      "to": "user_interface",
+      "type": "http",
+      "label": "returns files",
+      "description": "File storage returns generated files to UI"
+    },
+    {
+      "from": "error_handler",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs errors",
+      "description": "Error handler logs all errors"
+    },
+    {
+      "from": "error_handler",
+      "to": "fallback_data_service",
+      "type": "dependency",
+      "label": "gets fallback data",
+      "description": "Error handler uses fallback data on failures"
+    },
+    {
+      "from": "error_handler",
+      "to": "user_interface",
+      "type": "http",
+      "label": "error messages",
+      "description": "Error handler sends error messages to UI"
+    },
+    {
+      "from": "monitoring_service",
+      "to": "logger",
+      "type": "dependency",
+      "label": "reads logs",
+      "description": "Monitoring service reads logs for metrics"
+    },
+    {
+      "from": "monitoring_service",
+      "to": "api_integration",
+      "type": "dependency",
+      "label": "tracks API usage",
+      "description": "Monitoring service tracks API calls and costs"
+    },
+    {
+      "from": "config_manager",
+      "to": "logger",
+      "type": "dependency",
+      "label": "logs config",
+      "description": "Config manager logs configuration changes"
+    },
+    {
+      "from": "cache_layer",
+      "to": "file_storage",
+      "type": "db_query",
+      "label": "persist cache",
+      "description": "Cache layer persists important data to storage"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "input_stage",
+      "name": "Input & Validation Stage",
+      "description": "Handles user input collection and validation",
+      "components": [
+        "user_interface",
+        "input_validator",
+        "config_manager"
+      ]
+    },
+    {
+      "id": "llm_stage",
+      "name": "LLM Query & Ranking Stage",
+      "description": "Queries LLM and ranks results",
+      "components": [
+        "llm_query_service",
+        "link_ranker",
+        "api_integration"
+      ]
+    },
+    {
+      "id": "scraping_stage",
+      "name": "Web Scraping & Processing Stage",
+      "description": "Scrapes and processes web content",
+      "components": [
+        "web_scraper",
+        "content_processor"
+      ]
+    },
+    {
+      "id": "generation_stage",
+      "name": "Architecture Generation Stage",
+      "description": "Generates architecture specification",
+      "components": [
+        "architecture_generator",
+        "spec_builder"
+      ]
+    },
+    {
+      "id": "rendering_stage",
+      "name": "Diagram Rendering Stage",
+      "description": "Renders diagrams in multiple formats",
+      "components": [
+        "diagram_generator_png",
+        "diagram_generator_svg",
+        "diagram_generator_gif"
+      ]
+    },
+    {
+      "id": "output_stage",
+      "name": "Output & Storage Stage",
+      "description": "Stores and delivers generated outputs",
+      "components": [
+        "file_storage",
+        "user_interface"
+      ]
+    },
+    {
+      "id": "support_services",
+      "name": "Support Services",
+      "description": "Cross-cutting support services",
+      "components": [
+        "error_handler",
+        "logger",
+        "cache_layer",
+        "monitoring_service",
+        "fallback_data_service"
+      ]
+    }
+  ],
+  "metadata": {
+    "created": "2026-01-04",
+    "version": "1.0.0",
+    "design_level": "HLD",
+    "total_components": 20,
+    "total_relationships": 38,
+    "total_clusters": 7,
+    "component_types": {
+      "client": 1,
+      "gateway": 1,
+      "microservice": 15,
+      "database": 1,
+      "cache": 1,
+      "external_service": 0
+    },
+    "relationship_types": {
+      "http": 6,
+      "grpc": 0,
+      "db_query": 6,
+      "dependency": 26,
+      "solid": 0,
+      "curved": 0
+    },
+    "stages": 7,
+    "total_time_per_request": "22 seconds",
+    "critical_path": [
+      "user_interface",
+      "input_validator",
+      "llm_query_service",
+      "link_ranker",
+      "web_scraper",
+      "content_processor",
+      "architecture_generator",
+      "spec_builder",
+      "diagram_generator_png",
+      "file_storage"
+    ]
+  }
+}

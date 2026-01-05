@@ -1,0 +1,109 @@
+{
+    "topic": "**Real-time Chat Architecture**",
+    "level": "HLD",
+    "components": {
+        "Client": {
+            "type": "client",
+            "shape": "rounded_rectangle",
+            "color": "#4A90E2",
+            "description": "Web/mobile app using WebSockets for real-time messaging"
+        },
+        "Load Balancer": {
+            "type": "gateway",
+            "shape": "hexagon",
+            "color": "#7B68EE",
+            "description": "Distributes incoming WebSocket connections across chat servers"
+        },
+        "Chat Server": {
+            "type": "microservice",
+            "shape": "rounded_square",
+            "color": "#50C878",
+            "description": "Handles real-time message routing and user sessions via WebSockets"
+        },
+        "Message Queue": {
+            "type": "queue",
+            "shape": "lightning",
+            "color": "#FFA500",
+            "description": "Ensures reliable async message delivery (RabbitMQ/Amazon MQ)"
+        },
+        "Cache": {
+            "type": "cache",
+            "shape": "stack",
+            "color": "#50C878",
+            "description": "Stores recent messages, user profiles (Redis/Memcached)"
+        },
+        "Database": {
+            "type": "database",
+            "shape": "cylinder",
+            "color": "#FF6B6B",
+            "description": "Persistent storage for chat history, users (MongoDB/Cassandra)"
+        },
+        "Presence Service": {
+            "type": "microservice",
+            "shape": "circle",
+            "color": "#7B68EE",
+            "description": "Tracks online status and broadcasts presence updates"
+        }
+    },
+    "relationships": [
+        {
+            "from": "Client",
+            "to": "Load Balancer",
+            "type": "request",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Load Balancer",
+            "to": "Chat Server",
+            "type": "sync_call",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Chat Server",
+            "to": "Presence Service",
+            "type": "async_event",
+            "line": "dashed",
+            "arrow": true
+        },
+        {
+            "from": "Chat Server",
+            "to": "Message Queue",
+            "type": "async_event",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Message Queue",
+            "to": "Chat Server",
+            "type": "async_event",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Chat Server",
+            "to": "Cache",
+            "type": "read_write",
+            "line": "dotted",
+            "arrow": true
+        },
+        {
+            "from": "Chat Server",
+            "to": "Database",
+            "type": "read_write",
+            "line": "solid",
+            "arrow": true
+        }
+    ],
+    "resources": [
+        "https://microservices.io/",
+        "https://www.nginx.com/blog/introduction-to-microservices/",
+        "https://martinfowler.com/articles/microservices.html",
+        "https://en.wikipedia.org/wiki/Software_architecture",
+        "https://en.wikipedia.org/wiki/**Real-time_Chat_Architecture**",
+        "https://en.wikipedia.org/wiki/HLD_architecture",
+        "https://aws.amazon.com/architecture/reference-architectures/"
+    ],
+    "raw_content": "[Source 1]\nMy virtual bootcamp, distributed data patterns in a microservice architecture, is now open for enrollment! It covers the key distributed data management patterns including Saga, API Composition, and CQRS. It consists of video lectures, code labs, and a weekly ask-me-anything video conference repeated in multiple timezones. The regular price is $395/person but use coupon OFFEFKCW to sign up for $95 (valid until Sept 30th, 2025). There are deeper discounts for buying multiple seats. Learn more\n\n---\n\n[Source 2]\nF5 NGINXaaS for Google Cloud Enhance app delivery and security in Google Cloud without the operational toil: Accelerate performance, strengthen protection, and improve visibility at scale, while keeping costs optimized.\n\n---\n\n[Source 3]\nâMicroservicesâ - yet another new term on the crowded streets of software architecture. Although our natural inclination is to pass such things by with a contemptuous glance, this bit of terminology describes a style of software systems that we are finding more and more appealing. We've seen many projects use this style in the last few years, and results so far have been positive, so much so that for many of our colleagues this is becoming the default style for building enterprise applications. Sadly, however, there's not much information that outlines what the microservice style is and how to do it. In short, the microservice architectural style is an approach to developing a single application as a suite of small services, each running in its own process and communicating with lightweight mechanisms, often an HTTP resource API. These services are built around business capabilities and independently deployable by fully automated deployment machinery. There is a bare minimum of centralized management of these services, which may be written in different programming languages and use different data storage technologies. To start explaining the microservice style it's useful to compare it to the monolithic style: a mo"
+}

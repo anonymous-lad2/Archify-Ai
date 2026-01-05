@@ -58,25 +58,25 @@ def generate_animated_svg_correct_flow(config_path, spec, output='architecture_a
         # Create subgraphs for clusters
         for cluster in spec['clusters']:
             with dot.subgraph(name=f'cluster_{cluster["id"]}') as c:
-                c.attr(style='filled', color='#f0f0f0', label=cluster['label'])
+                c.attr(style='filled', color='#f0f0f0', label=cluster.get('label',''))
                 c.attr(fontname=g['fontname'], fontsize='10', fontcolor='#333')
                 
                 # Add components to this cluster
                 for cid in cluster['components']:
                     if cid in spec['components']:
                         info = spec['components'][cid]
-                        attrs = get_component_attrs(info['type'], info['label'])
+                        attrs = get_component_attrs(info['type'], info.get('label',cid))
                         c.node(cid, **attrs)
         
         # Add non-clustered components to main graph
         for cid, info in spec['components'].items():
             if cid not in cluster_map:  # Not in any cluster
-                attrs = get_component_attrs(info['type'], info['label'])
+                attrs = get_component_attrs(info['type'], info.get('label',cid))
                 dot.node(cid, **attrs)
     else:
         # No clusters - add all components directly
         for cid, info in spec['components'].items():
-            attrs = get_component_attrs(info['type'], info['label'])
+            attrs = get_component_attrs(info['type'], info.get('label',cid))
             dot.node(cid, **attrs)
     
     # Relationships (formerly edges)

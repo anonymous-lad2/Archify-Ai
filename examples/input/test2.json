@@ -1,0 +1,87 @@
+{
+    "topic": "Google Maps",
+    "level": "LLD",
+    "components": {
+        "Google Maps Client": {
+            "type": "client",
+            "shape": "rounded_rectangle",
+            "color": "#4A90E2",
+            "description": "User interface for web browsers and mobile devices. Provides access to maps, search, navigation, and Street View. Built with JavaScript, XML, and Ajax."
+        },
+        "Maps API Gateway": {
+            "type": "gateway",
+            "shape": "hexagon",
+            "color": "#7B68EE",
+            "description": "Authenticates and routes client requests to backend services. Also provides a public API for third-party website integration."
+        },
+        "Core Mapping & Routing Service": {
+            "type": "microservice",
+            "shape": "rounded_square",
+            "color": "#50C878",
+            "description": "Core backend service, originally written in C++, that handles map tile rendering, route planning calculations, and other geospatial processing."
+        },
+        "Data Services": {
+            "type": "microservice",
+            "shape": "rounded_square",
+            "color": "#FFA500",
+            "description": "Collection of services for real-time traffic analysis, Street View imagery, and location/business search functionality."
+        },
+        "Geospatial Data Stores": {
+            "type": "database",
+            "shape": "cylinder",
+            "color": "#FF6B6B",
+            "description": "Distributed storage for satellite imagery, aerial photography, street maps, 360° panoramic views, and real-time traffic information."
+        }
+    },
+    "relationships": [
+        {
+            "from": "Google Maps Client",
+            "to": "Maps API Gateway",
+            "type": "request",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Maps API Gateway",
+            "to": "Core Mapping & Routing Service",
+            "type": "sync_call",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Maps API Gateway",
+            "to": "Data Services",
+            "type": "sync_call",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Core Mapping & Routing Service",
+            "to": "Geospatial Data Stores",
+            "type": "read_write",
+            "line": "solid",
+            "arrow": true
+        },
+        {
+            "from": "Core Mapping & Routing Service",
+            "to": "Data Services",
+            "type": "sync_call",
+            "line": "dashed",
+            "arrow": true
+        },
+        {
+            "from": "Data Services",
+            "to": "Geospatial Data Stores",
+            "type": "read_write",
+            "line": "solid",
+            "arrow": true
+        }
+    ],
+    "resources": [
+        "https://en.wikipedia.org/wiki/Google_Maps",
+        "https://en.wikipedia.org/wiki/LLD_architecture",
+        "https://aws.amazon.com/architecture/reference-architectures/",
+        "https://www.nginx.com/blog/designing-scalable-architectures/"
+    ],
+    "raw_content": "[Source 1]\nWeb mapping service Google Maps Screenshot of Google Maps in a web browser Type of site Web mapping Available in 74 languages List of languages Afrikaans, Azerbaijani, Indonesian, Malay, Bosnian, Catalan, Czech, Danish, German (Germany), Estonian, English (United States), Spanish (Spain), Spanish (Latin America), Basque, Filipino, French (France), Galician, Croatian, Zulu, Icelandic, Italian, Swahili, Latvian, Lithuanian, Hungarian, Dutch, Norwegian, Uzbek, Polish, Portuguese (Brazil), Portuguese (Portugal), Romanian, Albanian, Slovak, Slovenian, Finnish, Swedish, Vietnamese, Turkish, Greek, Bulgarian, Kyrgyz, Kazakh, Macedonian, Mongolian, Russian, Serbian, Ukrainian, Georgian, Armenian, Hebrew, Urdu, Arabic, Persian, Amharic, Nepali, Hindi, Marathi, Bengali, Punjabi, Gujarati, Tamil, Telugu, Kannada, Malayalam, Sinhala, Thai, Lao, Burmese, Khmer, Korean, Japanese, Simplified Chinese, Traditional Chinese Owner Google URL www .google .com /maps Commercial Yes Registration Optional, included with a Google Account Launched February 8, 2005 ; 20 years ago ( 2005-02-08 ) Current status Active Written in C++ (back-end), JavaScript , XML , Ajax (UI) Google Maps is a web mapping platform and consumer application developed by Google . It offers satellite imagery , aerial photography , street maps, 360° interactive panoramic views of streets ( Street View ), real-time traffic conditions, and route planning for traveling by foot, car, bike, air (in beta ) and public transportation . As of 2020 [update] , Google Maps was being used by over one billion people every month around the world. [ 1 ] Google Maps began as a C++ desktop program developed by brothers Lars and Jens Rasmussen , Stephen Ma and Noel Gordon in Australia at Where 2 Technologies. In October 2004, the company was acquired by Google, which converted it into a web application. After additional acquisitions of a geospatial data visualization company and a real-time traffic analyzer, Google Maps was laun"
+}

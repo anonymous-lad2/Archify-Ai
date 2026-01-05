@@ -48,7 +48,7 @@ def generate_diagram(config_path, spec, output='architecture.png'):
     
     # Components (formerly nodes)
     for cid, info in spec['components'].items():
-        attrs = get_component_attrs(config, info['type'], info['label'])
+        attrs = get_component_attrs(config, info['type'], info.get('label',cid))
         dot.node(cid, **attrs)
     
     # Relationships (formerly edges): {"from": "A", "to": "B", "type": "http", "label": "API"}
@@ -67,7 +67,7 @@ def generate_diagram(config_path, spec, output='architecture.png'):
     if 'clusters' in spec and spec['clusters']:
         for cluster in spec['clusters']:
             with dot.subgraph(name=f'cluster_{cluster["id"]}') as c:
-                c.attr(style='filled', color='lightgrey', label=cluster['label'])
+                c.attr(style='filled', color='lightgrey', label=cluster.get('label','unnamed'))
                 for cid in cluster['components']:
                     c.node(cid)
     

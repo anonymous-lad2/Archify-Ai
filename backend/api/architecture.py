@@ -36,10 +36,10 @@ def generate_architecture_endpoint(req: ArchitectureRequest):
         }
 
         # generating SVG
-        generate_animated_svg_correct_flow(config_path="utils/design_rules.json",spec=diagram_data,output=f"{diagram_filename}.svg")
+        generate_animated_svg_correct_flow(config_path="backend/utils/design_rules.json",spec=diagram_data,output=f"{diagram_filename}.svg")
 
         # generating Image
-        generate_diagram(config_path="utils/design_rules.json",spec=diagram_data,output=f"{diagram_filename}.png")
+        generate_diagram(config_path="backend/utils/design_rules.json",spec=diagram_data,output=f"{diagram_filename}.png")
 
     except Exception as e:
         print(f"⚠️ Diagram generation failed: {e}")

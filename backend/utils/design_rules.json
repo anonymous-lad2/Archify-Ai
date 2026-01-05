@@ -80,6 +80,32 @@
       "color": "#3B82F6",
       "penwidth": "2.5"
     },
+    "request": { "color": "#4A90E2", "style": "solid", "arrowhead": "normal" },
+    "sync_call": {
+      "color": "#50C878",
+      "style": "solid",
+      "arrowhead": "normal",
+      "label": "sync"
+    },
+    "read_write": {
+      "color": "#FF6B6B",
+      "style": "solid",
+      "arrowhead": "normal",
+      "label": "R/W"
+    },
+    "response": { "color": "#50C878", "style": "solid", "arrowhead": "vee" },
+    "async_call": {
+      "color": "#00A676",
+      "style": "dashed",
+      "arrowhead": "normal"
+    },
+    "async_event": {
+      "color": "#9C27B0",
+      "style": "dotted",
+      "arrowhead": "odot"
+    },
+    "batch": { "color": "#FF9800", "style": "solid", "arrowhead": "normal" },
+    "stream": { "color": "#2196F3", "style": "waved", "arrowhead": "normal" },
     "grpc": { "style": "solid", "arrowhead": "obox", "color": "#10B981" },
     "db_query": { "style": "dotted", "arrowhead": "crow", "color": "#F59E0B" },
     "composition": {
